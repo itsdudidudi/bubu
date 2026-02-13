@@ -99,29 +99,28 @@ button {
     animation: fadeFloat 2s ease forwards, floatTicket 3s ease-in-out infinite alternate;
 }
 
-/* HAPPY GIFS AROUND TICKET */
+/* HAPPY GIFS ON SIDES OF TICKET */
 .happyContainer {
     position: absolute;
-    top: -120px;
-    left: -120px;
-    width: calc(100% + 240px);
-    height: calc(100% + 240px);
+    top: 0;
+    left: -80px;               /* extend left */
+    width: calc(100% + 160px);  /* cover left + right sides */
+    height: 100%;               /* match ticket height */
     pointer-events: none;
-    z-index: 0; /* behind ticket */
+    z-index: 0;                 /* behind ticket */
+    overflow: visible;
 }
 
 .happyGif {
     position: absolute;
     width: 50px;
-    animation: floatHappy linear infinite;
+    animation: floatHappy 3s ease-in-out infinite;
 }
 
 @keyframes floatHappy {
-    0% { transform: translate(0, 0); }
-    25% { transform: translate(5px, -5px); }
-    50% { transform: translate(-5px, 5px); }
-    75% { transform: translate(5px, 5px); }
-    100% { transform: translate(0, 0); }
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
 }
 
 /* LAUGH GIF */
@@ -196,19 +195,23 @@ document.getElementById("yesBtn").addEventListener("click", function() {
     ticket.offsetHeight; // force reflow for iPhone
     ticket.classList.add("ticketFloat");
 
-    // Add multiple happy gifs around ticket
+    // Add multiple happy gifs on sides of ticket
     const happyContainer = document.getElementById("happyContainer");
-    const totalGifs = 12; // number of happy gifs
+    const totalGifs = 12;
 
     for (let i = 0; i < totalGifs; i++) {
         const happy = document.createElement('img');
         happy.src = 'happy.gif';
         happy.classList.add('happyGif');
 
-        // Random position in container (around ticket, inside pink area)
-        const x = Math.random() * happyContainer.offsetWidth;
-        const y = Math.random() * happyContainer.offsetHeight;
-        happy.style.left = x + 'px';
+        const containerWidth = happyContainer.offsetWidth;
+        const containerHeight = happyContainer.offsetHeight;
+
+        // place on left or right side
+        const side = Math.random() < 0.5 ? -50 : containerWidth - 50; // left or right
+        const y = Math.random() * (containerHeight - 50);            // vertical position along ticket
+
+        happy.style.left = side + 'px';
         happy.style.top = y + 'px';
         happy.style.animationDuration = (2 + Math.random() * 2) + 's';
 
