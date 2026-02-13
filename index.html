@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Valentine</title>
 
 <style>
-
 body {
     margin: 0;
     overflow-x: hidden;
@@ -17,6 +15,7 @@ body {
     color: white;
 }
 
+/* CONTAINERS */
 .container {
     min-height: 100vh;
     display: flex;
@@ -24,22 +23,20 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    position: relative;
 }
 
-/* TITLE */
 .mainTitle {
     font-size: clamp(24px, 6vw, 40px);
     margin-bottom: 20px;
 }
 
-/* GIFS */
 .gif {
     width: 200px;
     max-width: 60vw;
     margin: 15px 0;
 }
 
-/* BUTTONS */
 .buttons {
     margin-top: 20px;
 }
@@ -53,18 +50,10 @@ button {
     margin: 10px;
 }
 
-#yesBtn {
-    background-color: #4CAF50;
-    color: white;
-}
+#yesBtn { background-color: #4CAF50; color: white; }
+#noBtn { background-color: #f44336; color: white; position: relative; }
 
-#noBtn {
-    background-color: #f44336;
-    color: white;
-    position: relative;
-}
-
-/* HEART ANIMATION */
+/* FLOATING HEARTS */
 .heart {
     position: fixed;
     bottom: -20px;
@@ -79,32 +68,26 @@ button {
 }
 
 /* SECOND PAGE */
-#secondPage {
-    display: none;
+#secondPage { display: none; }
+
+/* TICKET */
+.ticketWrapper {
+    position: relative;
+    display: inline-block;
 }
 
 .ticket {
     width: 280px;
     max-width: 80vw;
-    margin-top: 20px;
+    display: block;
+    z-index: 1;
     opacity: 0;
-    animation: fadeFloat 2s ease forwards;
 }
 
-/* FLOAT + FADE */
+/* FADE + FLOAT */
 @keyframes fadeFloat {
-    0% {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0px);
-    }
-}
-
-.ticketFloat {
-    animation: floatTicket 3s ease-in-out infinite alternate;
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0px); }
 }
 
 @keyframes floatTicket {
@@ -112,17 +95,33 @@ button {
     to { transform: translateY(10px); }
 }
 
-/* HAPPY GIFS AROUND */
-.happyRow {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 15px;
+.ticketFloat {
+    animation: fadeFloat 2s ease forwards, floatTicket 3s ease-in-out infinite alternate;
 }
 
-.happyRow img {
-    width: 70px;
+/* HAPPY GIFS AROUND TICKET */
+.happyContainer {
+    position: absolute;
+    top: -120px;
+    left: -120px;
+    width: calc(100% + 240px);
+    height: calc(100% + 240px);
+    pointer-events: none;
+    z-index: 0; /* behind ticket */
+}
+
+.happyGif {
+    position: absolute;
+    width: 50px;
+    animation: floatHappy linear infinite;
+}
+
+@keyframes floatHappy {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(5px, -5px); }
+    50% { transform: translate(-5px, 5px); }
+    75% { transform: translate(5px, 5px); }
+    100% { transform: translate(0, 0); }
 }
 
 /* LAUGH GIF */
@@ -133,7 +132,6 @@ button {
     width: 120px;
     display: none;
 }
-
 </style>
 </head>
 
@@ -145,43 +143,33 @@ button {
 
 <!-- PAGE 1 -->
 <div class="container" id="firstPage">
-
     <h1 class="mainTitle">
         Helo muchki bubu, your dudu is asking you to be his valentine ❤️
     </h1>
-
     <img src="start.gif" class="gif">
-
     <div class="buttons">
         <button id="yesBtn">YES</button>
         <button id="noBtn">NO</button>
     </div>
-
 </div>
 
 <!-- PAGE 2 -->
 <div class="container" id="secondPage">
-
     <h1 class="mainTitle">
         WELL DONE MY PANDAAAA ❤️<br>
         FOR MAKING THE RIGHT CHOICE YOU JUST WON THIS:
     </h1>
 
-    <img src="ticket.jpeg" class="ticket" id="ticket">
-
-    <div class="happyRow">
-        <img src="happy.gif">
-        <img src="happy.gif">
-        <img src="happy.gif">
+    <div class="ticketWrapper">
+        <img src="ticket.jpeg" class="ticket" id="ticket">
+        <div class="happyContainer" id="happyContainer"></div>
     </div>
-
 </div>
 
 <!-- LAUGH GIF -->
 <img src="laugh.gif" id="laughGif">
 
 <script>
-
 /* FLOATING HEARTS */
 function createHeart() {
     const heart = document.createElement("div");
@@ -191,51 +179,61 @@ function createHeart() {
     heart.style.fontSize = (Math.random() * 15 + 15) + "px";
     heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
     document.body.appendChild(heart);
-
-    setTimeout(() => {
-        heart.remove();
-    }, 6000);
+    setTimeout(() => heart.remove(), 6000);
 }
-
 setInterval(createHeart, 400);
 
 /* YES BUTTON */
 document.getElementById("yesBtn").addEventListener("click", function() {
-
     document.getElementById("song").pause();
     document.getElementById("love").play();
 
     document.getElementById("firstPage").style.display = "none";
-    document.getElementById("secondPage").style.display = "flex";
+    const secondPage = document.getElementById("secondPage");
+    secondPage.style.display = "flex";
 
-    // add floating animation after fade
-    setTimeout(() => {
-        document.getElementById("ticket").classList.add("ticketFloat");
-    }, 2000);
+    const ticket = document.getElementById("ticket");
+    ticket.offsetHeight; // force reflow for iPhone
+    ticket.classList.add("ticketFloat");
+
+    // Add multiple happy gifs around ticket
+    const happyContainer = document.getElementById("happyContainer");
+    const totalGifs = 12; // number of happy gifs
+
+    for (let i = 0; i < totalGifs; i++) {
+        const happy = document.createElement('img');
+        happy.src = 'happy.gif';
+        happy.classList.add('happyGif');
+
+        // Random position in container (around ticket, inside pink area)
+        const x = Math.random() * happyContainer.offsetWidth;
+        const y = Math.random() * happyContainer.offsetHeight;
+        happy.style.left = x + 'px';
+        happy.style.top = y + 'px';
+        happy.style.animationDuration = (2 + Math.random() * 2) + 's';
+
+        happyContainer.appendChild(happy);
+    }
 });
 
-/* NO BUTTON MOBILE ESCAPE */
-document.getElementById("noBtn").addEventListener("touchstart", moveButton);
-document.getElementById("noBtn").addEventListener("mouseover", moveButton);
+/* NO BUTTON ESCAPE */
+const noBtn = document.getElementById("noBtn");
+const laugh = document.getElementById("laughGif");
 
 function moveButton() {
-    const btn = document.getElementById("noBtn");
-    const laugh = document.getElementById("laughGif");
-
     const x = Math.random() * (window.innerWidth - 100);
     const y = Math.random() * (window.innerHeight - 50);
 
-    btn.style.position = "fixed";
-    btn.style.left = x + "px";
-    btn.style.top = y + "px";
+    noBtn.style.position = "fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
 
     laugh.style.display = "block";
-
-    setTimeout(() => {
-        laugh.style.display = "none";
-    }, 2000);
+    setTimeout(() => { laugh.style.display = "none"; }, 2000);
 }
 
+noBtn.addEventListener("touchstart", moveButton);
+noBtn.addEventListener("mouseover", moveButton);
 </script>
 
 </body>
