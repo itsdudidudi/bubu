@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Bubu's Valentine 💌</title>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    color: white;
+}
+
+/* Floating hearts */
+.heart {
+    position: absolute;
+    font-size: 20px;
+    animation: float 6s linear infinite;
+    opacity: 0.7;
+    z-index: 1;
+}
+
+@keyframes float {
+    from { transform: translateY(100vh); }
+    to { transform: translateY(-10vh); }
+}
+
+/* Buttons */
+button {
+    padding: 12px 25px;
+    margin: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+    z-index: 10;
+}
+
+#yesBtn { background-color: #ff4b5c; color: white; }
+#noBtn { background-color: white; color: #ff4b5c; position:absolute; }
+
+/* Second page text */
+#secondPage {
+    display: none;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    z-index: 10;
+}
+
+/* Ticket */
+#ticket {
+    display: none;
+    width: 380px;
+    max-width: 90%;
+    margin: 30px auto;
+    opacity: 0;
+    position: relative;
+    z-index: 10;
+    animation: floatFade 4s ease-in-out infinite alternate;
+}
+
+/* Ticket floating & fade animation */
+@keyframes floatFade {
+    0% { opacity: 0; transform: translateY(20px); }
+    50% { opacity: 1; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0px); }
+}
+
+/* Happy gifs floating around sides */
+.happyGif {
+    position: fixed;
+    width: 140px;
+    animation: floatSide 4s ease-in-out infinite alternate;
+    z-index: 5;
+}
+
+@keyframes floatSide {
+    from { transform: translateY(0px); }
+    to { transform: translateY(20px); }
+}
+
+/* Laugh gif */
+#laughGif {
+    position: fixed;
+    width: 150px;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    display: none;
+    z-index: 15;
+}
+</style>
+</head>
+
+<body>
+
+<script>
+/* Floating hearts */
+for (let i = 0; i < 20; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (4 + Math.random() * 4) + "s";
+    document.body.appendChild(heart);
+}
+</script>
+
+<div class="container">
+
+    <!-- FIRST PAGE -->
+    <div id="firstPage">
+        <h1>Helo muchki bubu, your dudu is asking you to be his valentine ❤️</h1>
+        <img id="startGif" src="start.gif" alt="Start GIF" style="width:300px; margin:20px 0; z-index:10; position:relative;">
+        <br>
+        <button id="yesBtn">Yes 💖</button>
+        <button id="noBtn">No 😢</button>
+        <img id="laughGif" src="laugh.gif" alt="Laugh GIF">
+    </div>
+
+    <!-- SECOND PAGE -->
+    <div id="secondPage">
+        Well doneeee white pandaa ❤️ for making the right choice you just won thiiiis:
+    </div>
+
+    <!-- Ticket -->
+    <img id="ticket" src="ticket.jpeg" alt="Ticket">
+
+</div>
+
+<audio id="loveMusic" src="love.mp3"></audio>
+
+<script>
+// Buttons
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const laughGif = document.getElementById("laughGif");
+
+// No button initial position
+noBtn.style.left = "50%";
+noBtn.style.top = "70%";
+
+// Make "No" button run away & show laugh.gif
+noBtn.addEventListener("mouseover", () => {
+    const maxX = window.innerWidth - noBtn.offsetWidth;
+    const maxY = window.innerHeight - noBtn.offsetHeight;
+    noBtn.style.left = Math.random() * maxX + "px";
+    noBtn.style.top = Math.random() * maxY + "px";
+
+    // Show laugh.gif temporarily
+    laughGif.style.display = "block";
+    setTimeout(() => laughGif.style.display = "none", 1500);
+});
+
+// Yes button click
+yesBtn.onclick = function() {
+    // Hide first page
+    document.getElementById("firstPage").style.display = "none";
+
+    // Show second page text
+    document.getElementById("secondPage").style.display = "block";
+
+    // Show ticket
+    const ticket = document.getElementById("ticket");
+    ticket.style.display = "block";
+
+    // Play music
+    document.getElementById("loveMusic").play();
+
+    // Add happy gifs around sides
+    const positions = [
+        {top: "15%", left: "5%"},
+        {top: "45%", left: "5%"},
+        {top: "75%", left: "5%"},
+        {top: "15%", right: "5%"},
+        {top: "45%", right: "5%"},
+        {top: "75%", right: "5%"}
+    ];
+
+    positions.forEach(pos => {
+        const img = document.createElement("img");
+        img.src = "happy.gif";
+        img.className = "happyGif";
+        img.style.top = pos.top;
+        if(pos.left) img.style.left = pos.left;
+        if(pos.right) img.style.right = pos.right;
+        document.body.appendChild(img);
+    });
+};
+</script>
+
+</body>
+</html>
