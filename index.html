@@ -2,196 +2,240 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Bubu's Valentine 💌</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Valentine</title>
+
 <style>
+
 body {
     margin: 0;
+    overflow-x: hidden;
     font-family: Arial, sans-serif;
     text-align: center;
-    overflow: hidden;
     background: linear-gradient(135deg, #ffdde1, #ee9ca7);
     color: white;
 }
 
-/* Floating hearts */
-.heart {
-    position: absolute;
-    font-size: 20px;
-    animation: float 6s linear infinite;
-    opacity: 0.7;
-    z-index: 1;
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
-@keyframes float {
-    from { transform: translateY(100vh); }
-    to { transform: translateY(-10vh); }
+/* TITLE */
+.mainTitle {
+    font-size: clamp(24px, 6vw, 40px);
+    margin-bottom: 20px;
 }
 
-/* Buttons */
+/* GIFS */
+.gif {
+    width: 200px;
+    max-width: 60vw;
+    margin: 15px 0;
+}
+
+/* BUTTONS */
+.buttons {
+    margin-top: 20px;
+}
+
 button {
     padding: 12px 25px;
-    margin: 10px;
     font-size: 18px;
     border: none;
-    border-radius: 20px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: 0.3s;
-    position: relative;
-    z-index: 10;
+    margin: 10px;
 }
 
-#yesBtn { background-color: #ff4b5c; color: white; }
-#noBtn { background-color: white; color: #ff4b5c; position:absolute; }
+#yesBtn {
+    background-color: #4CAF50;
+    color: white;
+}
 
-/* Second page text */
+#noBtn {
+    background-color: #f44336;
+    color: white;
+    position: relative;
+}
+
+/* HEART ANIMATION */
+.heart {
+    position: fixed;
+    bottom: -20px;
+    font-size: 20px;
+    animation: floatUp 6s linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-110vh); opacity: 0; }
+}
+
+/* SECOND PAGE */
 #secondPage {
     display: none;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    z-index: 10;
 }
 
-/* Ticket */
-#ticket {
-    display: none;
-    width: 380px;
-    max-width: 90%;
-    margin: 30px auto;
+.ticket {
+    width: 280px;
+    max-width: 80vw;
+    margin-top: 20px;
     opacity: 0;
-    position: relative;
-    z-index: 10;
-    animation: floatFade 4s ease-in-out infinite alternate;
+    animation: fadeFloat 2s ease forwards;
 }
 
-/* Ticket floating & fade animation */
-@keyframes floatFade {
-    0% { opacity: 0; transform: translateY(20px); }
-    50% { opacity: 1; transform: translateY(-10px); }
-    100% { opacity: 1; transform: translateY(0px); }
+/* FLOAT + FADE */
+@keyframes fadeFloat {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
 }
 
-/* Happy gifs floating around sides */
-.happyGif {
-    position: fixed;
-    width: 140px;
-    animation: floatSide 4s ease-in-out infinite alternate;
-    z-index: 5;
+.ticketFloat {
+    animation: floatTicket 3s ease-in-out infinite alternate;
 }
 
-@keyframes floatSide {
-    from { transform: translateY(0px); }
-    to { transform: translateY(20px); }
+@keyframes floatTicket {
+    from { transform: translateY(-10px); }
+    to { transform: translateY(10px); }
 }
 
-/* Laugh gif */
+/* HAPPY GIFS AROUND */
+.happyRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.happyRow img {
+    width: 70px;
+}
+
+/* LAUGH GIF */
 #laughGif {
     position: fixed;
-    width: 150px;
-    top: 50%;
     right: 10px;
-    transform: translateY(-50%);
+    bottom: 10px;
+    width: 120px;
     display: none;
-    z-index: 15;
 }
+
 </style>
 </head>
 
 <body>
 
-<script>
-/* Floating hearts */
-for (let i = 0; i < 20; i++) {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = (4 + Math.random() * 4) + "s";
-    document.body.appendChild(heart);
-}
-</script>
+<!-- MUSIC -->
+<audio id="song" src="song.mp3" autoplay loop></audio>
+<audio id="love" src="love.mp3" loop></audio>
 
-<div class="container">
+<!-- PAGE 1 -->
+<div class="container" id="firstPage">
 
-    <!-- FIRST PAGE -->
-    <div id="firstPage">
-        <h1>Helo muchki bubu, your dudu is asking you to be his valentine ❤️</h1>
-        <img id="startGif" src="start.gif" alt="Start GIF" style="width:300px; margin:20px 0; z-index:10; position:relative;">
-        <br>
-        <button id="yesBtn">Yes 💖</button>
-        <button id="noBtn">No 😢</button>
-        <img id="laughGif" src="laugh.gif" alt="Laugh GIF">
+    <h1 class="mainTitle">
+        Helo muchki bubu, your dudu is asking you to be his valentine ❤️
+    </h1>
+
+    <img src="start.gif" class="gif">
+
+    <div class="buttons">
+        <button id="yesBtn">YES</button>
+        <button id="noBtn">NO</button>
     </div>
-
-    <!-- SECOND PAGE -->
-    <div id="secondPage">
-        Well doneeee white pandaa ❤️ for making the right choice you just won thiiiis:
-    </div>
-
-    <!-- Ticket -->
-    <img id="ticket" src="ticket.jpeg" alt="Ticket">
 
 </div>
 
-<audio id="loveMusic" src="love.mp3"></audio>
+<!-- PAGE 2 -->
+<div class="container" id="secondPage">
+
+    <h1 class="mainTitle">
+        WELL DONE MY PANDAAAA ❤️<br>
+        FOR MAKING THE RIGHT CHOICE YOU JUST WON THIS:
+    </h1>
+
+    <img src="ticket.jpeg" class="ticket" id="ticket">
+
+    <div class="happyRow">
+        <img src="happy.gif">
+        <img src="happy.gif">
+        <img src="happy.gif">
+    </div>
+
+</div>
+
+<!-- LAUGH GIF -->
+<img src="laugh.gif" id="laughGif">
 
 <script>
-// Buttons
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const laughGif = document.getElementById("laughGif");
 
-// No button initial position
-noBtn.style.left = "50%";
-noBtn.style.top = "70%";
+/* FLOATING HEARTS */
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 15 + 15) + "px";
+    heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+    document.body.appendChild(heart);
 
-// Make "No" button run away & show laugh.gif
-noBtn.addEventListener("mouseover", () => {
-    const maxX = window.innerWidth - noBtn.offsetWidth;
-    const maxY = window.innerHeight - noBtn.offsetHeight;
-    noBtn.style.left = Math.random() * maxX + "px";
-    noBtn.style.top = Math.random() * maxY + "px";
+    setTimeout(() => {
+        heart.remove();
+    }, 6000);
+}
 
-    // Show laugh.gif temporarily
-    laughGif.style.display = "block";
-    setTimeout(() => laughGif.style.display = "none", 1500);
+setInterval(createHeart, 400);
+
+/* YES BUTTON */
+document.getElementById("yesBtn").addEventListener("click", function() {
+
+    document.getElementById("song").pause();
+    document.getElementById("love").play();
+
+    document.getElementById("firstPage").style.display = "none";
+    document.getElementById("secondPage").style.display = "flex";
+
+    // add floating animation after fade
+    setTimeout(() => {
+        document.getElementById("ticket").classList.add("ticketFloat");
+    }, 2000);
 });
 
-// Yes button click
-yesBtn.onclick = function() {
-    // Hide first page
-    document.getElementById("firstPage").style.display = "none";
+/* NO BUTTON MOBILE ESCAPE */
+document.getElementById("noBtn").addEventListener("touchstart", moveButton);
+document.getElementById("noBtn").addEventListener("mouseover", moveButton);
 
-    // Show second page text
-    document.getElementById("secondPage").style.display = "block";
+function moveButton() {
+    const btn = document.getElementById("noBtn");
+    const laugh = document.getElementById("laughGif");
 
-    // Show ticket
-    const ticket = document.getElementById("ticket");
-    ticket.style.display = "block";
+    const x = Math.random() * (window.innerWidth - 100);
+    const y = Math.random() * (window.innerHeight - 50);
 
-    // Play music
-    document.getElementById("loveMusic").play();
+    btn.style.position = "fixed";
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
 
-    // Add happy gifs around sides
-    const positions = [
-        {top: "15%", left: "5%"},
-        {top: "45%", left: "5%"},
-        {top: "75%", left: "5%"},
-        {top: "15%", right: "5%"},
-        {top: "45%", right: "5%"},
-        {top: "75%", right: "5%"}
-    ];
+    laugh.style.display = "block";
 
-    positions.forEach(pos => {
-        const img = document.createElement("img");
-        img.src = "happy.gif";
-        img.className = "happyGif";
-        img.style.top = pos.top;
-        if(pos.left) img.style.left = pos.left;
-        if(pos.right) img.style.right = pos.right;
-        document.body.appendChild(img);
-    });
-};
+    setTimeout(() => {
+        laugh.style.display = "none";
+    }, 2000);
+}
+
 </script>
 
 </body>
